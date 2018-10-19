@@ -6,6 +6,8 @@ library("reshape2")
 library("tidyr")
 library("quanteda")
 library("e1071")
+#install.packages("stringdist")
+library("stringdist")
 
 #significados:  
 #https://www.sketchengine.eu/english-treetagger-pipeline-2/
@@ -50,8 +52,192 @@ listaToMatrix <- melt(counts)
 tav <- spread(listaToMatrix, Var1, value, fill = 0)
 tav$L1 <- NULL
 
+#agrupamento de features
+fuzzyFeature <- cmeans(t(tav), 2)
 
+#Tecnica SSC
+#funcao de construcao da matriz p
+p.build<-function(labels, cluster){
+  p<-matrix(0,length(unique(labels)),3)
+  for(i in 1:length(unique(labels))){
+    vetorMaiores<-cluster[which(labels==i)]
+    #print(222222222)
+    #print(length(unique(cluster)))
+    for(j in 1:length(unique(cluster)))
+      p[i,j]<-length(which(vetorMaiores==j))
+  }
+  return(p)
+}
+
+#funcao de construcao de matriz P em porcentagem
+ppercentage.build <- function(labels, cluster){
+  matrizP <- p.build(labels, cluster)
+  return((matrizP*100)/rowSums(matrizP))
+}
+
+#contrucao da matriz m
+m.build <- function(matP){
+  m = matP
+  m[which(apply(m, 2, function(x) x != max(x,na.rm=TRUE)))] <- 0
+  m[which(apply(m, 2, function(x) x == max(x,na.rm=TRUE)))] <- 1
+  return(m)
+}
+
+#construcao da matriz f
+ftotal.build <- function(labels){
+  ftotal <- matrix(0, length(unique(labels)), length(labels))
+  for(i in 1:length(unique(labels))) ftotal[i,which(labels==i)]=1
+  return(ftotal)
+}
+
+#funcao que escolhe os quantas e quais serao as dicas
+f.random<- function(f, num){
+  return(sample(ncol(f), num))
+}
+
+#funcao que constroi o delta com as dicas
+delta.build <- function(fdicas,labels){
+  delta <- c(rep(0, length(labels)))
+  delta[fdicas] <- 1  
+  return(delta)
+}
+
+#equacao 13
+eq13 <- function(util, utilant, beta, delta, f.dicas, matM){
+  #return(utilant + (t(matM)%*%((2*beta*delta)*(f.dicas - (matM%*%util)))))
+  #print(dim(matM))
+  #print(dim(util))
+  #print(util)
+  parte1 = (matM%*%util)
+  #print(parte1)
+  return(utilant + (t(matM)%*%((2*beta*delta)*(f.dicas - parte1))))
+}
+#funcao de multiplicacao de vetor por matriz
+mult.vectormatrix <- function(matrix, vector){
+  return(rowSums(t(t(matrix)*vector)))
+}
+#funcao de multiplicacao de matriz por matriz
+multmatrix.geral <- function(matrix1, matrix2){
+  matrix.mult <- c()
+  for(i in 1:nrow(matrix1)){
+    matrix.mult <- rbind(matrix.mult, mult.vectormatrix(matrix2, matrix1[i, ]))
+  }
+  return(matrix.mult)
+}
+#equacao 12
+eq12 <- function(u, alfa, util, dataset){
+  return((((u^2) + alfa*((u - util)^2))%*%dataset)/rowSums((u^2) + alfa*((u - util)^2)))
+}
+#funcoes de distancias
+#dist.vSimples <- function(x, v){
+#  return(t(x-v)%*%(x-v))
+#}
+
+###no caso, quando for uma matriz no w, 
+#tem que pegar a quantidade de colunas ou linhas (ver se ta transposto ou não)
+#colocar o valor de w para todas as distancias
+
+dist.vSimples <- function(x, v, w=rep(1,length(x))){
+  w=w/sum(w)
+  return(sum((x-v)*(x-v)*w))
+}
+
+dist.v <- function(x, v, w=rep(1,nrow(x))){
+  dv = c()
+  for(i in 1:nrow(v)){
+    dv = rbind(dv, dist.vSimples(x, v[i,], w))
+  }
+  return(dv)
+}
+dist.xv <- function(dataset, v, w=rep(1,nrow(dataset))){
+  dxv = c()
+  for(t in 1:nrow(dataset)){
+    dxv = cbind(dxv, dist.v(dataset[t,], v, w))        
+  }
+  return(dxv)
+}
+dv.dpord <- function(dataset, v, w=rep(1,nrow(dataset))){
+  return((dist.xv(t(dataset), v, w))/(dist.xv(t(dataset), v, w)))
+}
+#equacao 11
+eq11 <- function(u, util, alfa, dataset, v, w=rep(1,nrow(dataset))){
+  parte1 = (alfa*util)/(1+alfa)
+  parte2 = 1-((alfa/(1+alfa))*(colSums(util)))
+  parte3 = parte2/colSums(dv.dpord(dataset, v, w))
+  u = parte1 + matrix(rep(parte3, nrow(util)), nrow(util), ncol(util), byrow = T)
+  return(u)
+}
+#=matrix(c(1,0,0,0,1,0,0,0,1), nrow = 3, ncol = 3, byrow = TRUE)
+
+#funcao semi-supervisionado clustering
+ssc.build <- function(dataset, f.dicas, delta, u, labels, alfa, w=rep(1,nrow(dataset))){
+  util = u
+  cluster = apply(u,2,which.max)
+  #print(cluster)
+  #print(labels)
+  #print(length(cluster))
+  matP <- p.build(labels, cluster)
+  matM <- m.build(matP)
+  #print(dim(matP))
+  #print(dim(matM))
+  beta = 0.06
+  for(i in 1:30){
+    repeat{
+      utilant <- util
+      util <- eq13(util, utilant, beta, delta, f.dicas, matM)
+      cluster = apply(util,2,which.max)
+      #print(cluster)
+      matP <- p.build(labels, cluster)
+      matM <- m.build(matP)
+      #print(matM)
+      #print(mean(abs((util) - (utilant))))
+      if(max(util) >= 7.993123e+307) break
+      else if(mean(abs((util) - (utilant))) < 0.00001) break
+    }
+    repeat{
+      uant <- u
+      v <- eq12(u, alfa, util, dataset)
+      u <- eq11(u, util, alfa, dataset, v, w)
+      #print((u))
+      #print(dim(uant))
+      #print(mean(abs((u) - (uant))))
+      #7.993123e+307
+      if(mean(abs((u) - (uant))) < 0.00001) break
+    }    
+  }
+  ssc <- list(u = u, util = util, v = v, matM = matM)
+  return(ssc)
+}
+#apply(u,2,which.max)
+
+
+runTecAcuracia <- function(w=rep(1,nrow(dataset)), numDicas, alfa, ftotal, dataset, delta, u, labels){
+  acc = c()
+  for(i in 1:10){
+    f.rand = f.random(ftotal, numDicas)
+    delta <- delta.build(f.rand,labels)
+    f.dicas[ , f.rand] <- ftotal[ , f.rand]
+    ssc <- ssc.build(dataset, f.dicas, delta, u, labels, alfa, w)
+    uf<-c(); for(i in 1:nrow(ftotal)) uf<-rbind(uf,colSums(matrix(ssc$u[as.logical(ssc$matM[i,]),],sum(ssc$matM[i,]),ncol(ssc$u)))) 
+    acc<-c(acc,sum(apply(uf,2,which.max)==labels)/length(labels)*100)
+  }
+  #u.plot(ssc$u)
+  return(mean(acc))
+}
+
+#Atribuicao de pesos aos grupos
+
+
+
+#todos os grupos de atributos começam com peso 1
+
+#agrupamento de documentos
 fuzzy <- cmeans(tav, 2)
+
+
+
+
+
 
 
 #####
