@@ -96,7 +96,7 @@ distance_between_two_points <- function( point_1, point_2)
 
 ## Weighted Average Distance
 
-average_distance <- function( point, others_points, weight = rep( 1, nrow(dataset) ) )
+average_distance <- function( point, others_points, weight = rep( 1, number_of_clusters ) )
 {
     distances <- c()
     weight <- weight / sum(weight)
