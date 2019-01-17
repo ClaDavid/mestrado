@@ -51,6 +51,42 @@ listaToMatrix <- melt(counts)
 tav <- spread(listaToMatrix, Var1, value, fill = 0)
 tav$L1 <- NULL
 
+#################################################################
+
+## Distance between two points
+## Before: dist.vSimples
+#distance_between_two_points <- function( point, centroid ){
+#  return( sum( (point - centroid)*(point - centroid) ) )
+#}
+
+## Before dist.v
+#distance.centroid <- function( point, centroid ){
+#  distance_centroid = c()
+  
+#  for( i in 1:nrow(centroid) )
+#  {
+#    distance_centroid = rbind( distance_centroid, distance_between_two_points( point, centroid[i,] ) )
+#  }
+  
+#  return( distance_centroid )
+#}
+
+## Before dist.xv
+#distance.dataset_to_centroid <- function( dataset, centroid ){
+#  distance_dataset_centroid = c()
+  
+#  for( t in 1:nrow(dataset) )
+#  {
+#    distance_dataset_centroid = cbind( distance_dataset_centroid, distance.centroid( dataset[t,], centroid ) )
+#  }
+#  return( distance_dataset_centroid )
+#}
+
+## Before dv.dpord
+#distance_centroid_dataset_to_dataset <- function( dataset, centroid, w=rep(1,nrow(dataset))){
+#  return( ( distance.dataset_to_centroid( t(dataset), centroid ) ) / ( distance.dataset_to_centroid( t(dataset), centroid ) ) )
+#}
+
 ## Distance between two points
 
 distance_between_two_points <- function( point_1, point_2)
@@ -58,17 +94,18 @@ distance_between_two_points <- function( point_1, point_2)
     return( sqrt( sum( ( point_1 - point_2 )^2 ) ) )
 }
 
-## Average Distance
+## Weighted Average Distance
 
-average_distance <- function( point, others_points )
+average_distance <- function( point, others_points, weight = rep( 1, nrow(dataset) ) )
 {
     distances <- c()
+    weight <- weight / sum(weight)
     
     for( i in 1:nrow( others_points ) )
     {
         distances <- distance_between_two_points( point, i )
     }
-    return( sum(distances) / length(distances) )
+    return( sum(distances * weight) / length(distances) )
 }
 
 
