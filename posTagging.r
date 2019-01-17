@@ -51,6 +51,36 @@ listaToMatrix <- melt(counts)
 tav <- spread(listaToMatrix, Var1, value, fill = 0)
 tav$L1 <- NULL
 
+## Distance between two points
+
+distance_between_two_points <- function( point_1, point_2)
+{
+    return( sqrt( sum( ( point_1 - point_2 )^2 ) ) )
+}
+
+## Average Distance
+
+average_distance <- function( point, others_points )
+{
+    distances <- c()
+    
+    for( i in 1:nrow( others_points ) )
+    {
+        distances <- distance_between_two_points( point, i )
+    }
+    return( sum(distances) / length(distances) )
+}
+
+
+
+featureOptimization.function <- function( tav, w=rep(1,nrow(dataset)) )
+{
+  
+  fuzzyFeature <- cmeans(t(tav), 2)
+  
+  
+}
+
 #agrupamento de features
 fuzzyFeature <- cmeans(t(tav), 2)
 
