@@ -15,7 +15,8 @@ library("stringdist")
 posText<- "I gave him my heart, and he took and pinched it to death; and flung it back to me.
            People feel with their hearts, Ellen, and since he has destroyed mine, I have not power to feel for him."
 
-tagPOS <-  function(x, ...) {
+tagPOS <-  function(x, ...) 
+{
   s <- as.String(x)
   word_token_annotator <- Maxent_Word_Token_Annotator()
   a2 <- Annotation(1L, "sentence", 1L, nchar(s))
@@ -29,26 +30,28 @@ tagPOS <-  function(x, ...) {
 data(reuters)
 reuters
 
-tokensTag <- lapply(reuters, tagPOS)
+tokensTag <- lapply( reuters, tagPOS )
 tokensTag
 
 tokens <- c()
-for(i in 1:length(reuters)){
-   tokens <- rbind(tokens, lapply(lapply(tokensTag[[i]]$POStagged, unlist), paste, collapse = ''))
+
+for( i in 1:length(reuters) )
+{
+    tokens <- rbind( tokens, lapply( lapply( tokensTag[[ i ]]$POStagged, unlist ), paste, collapse = '' ) )
 }
 
-tokens <- apply(tokens, 1, as.character)
+tokens <- apply( tokens, 1, as.character )
 
 #tokens <- paste( unlist(tokensTag[1]), collapse='')
-words <- strsplit(tokens, " ", fixed = T)
+words <- strsplit( tokens, " ", fixed = T )
 #words <- unlist(words)
-words <- lapply(words, unlist)
+words <- lapply( words, unlist )
 #counts <- table(words)
-counts <- lapply(words, table)
+counts <- lapply( words, table )
 
-listaToMatrix <- melt(counts)
+listaToMatrix <- melt( counts )
 
-tav <- spread(listaToMatrix, Var1, value, fill = 0)
+tav <- spread( listaToMatrix, Var1, value, fill = 0 )
 tav$L1 <- NULL
 
 #################################################################
@@ -89,6 +92,7 @@ tav$L1 <- NULL
 
 ## Distance between two points
 
+
 distance_between_two_points <- function( point_1, point_2)
 {
     return( sqrt( sum( ( point_1 - point_2 )^2 ) ) )
@@ -108,7 +112,16 @@ average_distance <- function( point, others_points, weight = rep( 1, number_of_c
     return( sum(distances * weight) / length(distances) )
 }
 
+number_of_clusters = 3
 
+for( cluster_quantity in 2:floor( sqrt( nrow(tav) ) ) )
+{
+    clustering_feature <- cmeans( t(tav), cluster_quantity )
+    
+}
+
+
+clustering_documents <- cmeans(tav)
 
 featureOptimization.function <- function( tav, w=rep(1,nrow(dataset)) )
 {
