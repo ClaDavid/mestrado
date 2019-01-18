@@ -5,6 +5,8 @@ library("kernlab")
 library("reshape2")
 library("tidyr")
 library("e1071")
+library("ppclust")
+library("fclust")
 #install.packages("stringdist")
 library("stringdist")
 
@@ -53,6 +55,16 @@ listaToMatrix <- melt( counts )
 
 tav <- spread( listaToMatrix, Var1, value, fill = 0 )
 tav$L1 <- NULL
+
+
+#############################
+fuzzyFeature <- fcm(tav, centers = 3)
+summary(fuzzyFeature)
+res.fcm4 <- ppclust2(res.fcm, "fclust")
+idxsf <- SIL.F(res.fcm4$Xca, res.fcm4$U, alpha=1)
+cat("Fuzzy Silhouette Index: ", idxsf)
+
+#############################
 
 #################################################################
 
@@ -112,7 +124,7 @@ average_distance <- function( point, others_points, weight = rep( 1, number_of_c
     return( sum(distances * weight) / length(distances) )
 }
 
-number_of_clusters = 3
+# number_of_clusters = 3
 
 for( cluster_quantity in 2:floor( sqrt( nrow(tav) ) ) )
 {
