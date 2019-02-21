@@ -10,6 +10,9 @@ library("fclust")
 #install.packages("stringdist")
 library("stringdist")
 
+# NAO ESQUECER A SEMENTE
+#set.seed(42)
+
 #significados:  
 #https://www.sketchengine.eu/english-treetagger-pipeline-2/
 #https://www.sketchengine.eu/modified-penn-treebank-tagset/
@@ -58,11 +61,33 @@ tav$L1 <- NULL
 
 
 #############################
-fuzzyFeature <- fcm(tav, centers = 3)
+silhoutte_final <- 0
+d = NULL
+
+start.time <- Sys.time()
+for( i in 2:floor( sqrt( nrow( t(tav) ) ) ) )
+{
+  #fuzzyFeature <- fcm(t(tav), centers = i)  
+  #result.fcm <- ppclust2(fuzzyFeature, "fclust")
+  result.fcm <- FKM(t(tav), k = i)
+  index_silhouette_fuzzy <- XB(result.fcm$Xca, result.fcm$U, result.fcm$H, result.fcm$m)
+  #silhoutte_final <- index_silhouette_fuzzy
+  if( index_silhouette_fuzzy < 0.4 ) break
+    d = rbind(d, data.frame(i, index_silhouette_fuzzy))
+
+  #if( silhoutte_final < index_silhouette_fuzzy ) silhoutte_final <- index_silhouette_fuzzy 
+}
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+
+write.csv(d, file = "Silhueta_Features_Teste_2.csv", row.names = FALSE)
+plot(d$i, d$index_silhouette_fuzzy, type = "o")
+axis(side=1, at=c(2:(length(d$i) + 1)))
+
 summary(fuzzyFeature)
-res.fcm4 <- ppclust2(res.fcm, "fclust")
-idxsf <- SIL.F(res.fcm4$Xca, res.fcm4$U, alpha=1)
-cat("Fuzzy Silhouette Index: ", idxsf)
+
+
+cat("Fuzzy Silhouette Index: ", silhoutte_final)
 
 #############################
 
@@ -225,7 +250,7 @@ eq12 <- function(u, alfa, util, dataset){
 #}
 
 ###no caso, quando for uma matriz no w, 
-#tem que pegar a quantidade de colunas ou linhas (ver se ta transposto ou não)
+#tem que pegar a quantidade de colunas ou linhas (ver se ta transposto ou nÃ£o)
 #colocar o valor de w para todas as distancias
 
 dist.vSimples <- function(x, v, w=rep(1,length(x))){
@@ -320,7 +345,7 @@ runTecAcuracia <- function(w=rep(1,nrow(dataset)), numDicas, alfa, ftotal, datas
 
 
 
-#todos os grupos de atributos começam com peso 1
+#todos os grupos de atributos comeÃ§am com peso 1
 
 #agrupamento de documentos
 fuzzy <- cmeans(tav, 2)
