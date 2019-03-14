@@ -10,6 +10,9 @@ library("fclust")
 #install.packages("stringdist")
 library("stringdist")
 
+# NAO ESQUECER A SEMENTE
+#set.seed(42)
+
 #significados:  
 #https://www.sketchengine.eu/english-treetagger-pipeline-2/
 #https://www.sketchengine.eu/modified-penn-treebank-tagset/
@@ -56,13 +59,34 @@ listaToMatrix <- melt( counts )
 tav <- spread( listaToMatrix, Var1, value, fill = 0 )
 tav$L1 <- NULL
 
+# H = objx$d
+dim(fuzzyFeature$v)
+
+
 
 #############################
-fuzzyFeature <- fcm(tav, centers = 3)
-summary(fuzzyFeature)
-res.fcm4 <- ppclust2(res.fcm, "fclust")
-idxsf <- SIL.F(res.fcm4$Xca, res.fcm4$U, alpha=1)
-cat("Fuzzy Silhouette Index: ", idxsf)
+silhoutte_final <- 0
+d = NULL
+
+start.time <- Sys.time()
+for( i in 2:floor( sqrt( nrow( t(tav) ) ) ) )
+{
+  fuzzyFeature <- fcm(t(tav), centers = i, nstart = 10)
+  result.fcm <- ppclust2(fuzzyFeature, "fclust")
+  index_silhouette_fuzzy <- SIL.F(result.fcm$Xca, result.fcm$U)
+  #silhoutte_final <- index_silhouette_fuzzy
+  if( index_silhouette_fuzzy < 0.4 ) break
+  d = rbind(d, data.frame(i, index_silhouette_fuzzy))
+
+  #if( silhoutte_final < index_silhouette_fuzzy ) silhoutte_final <- index_silhouette_fuzzy 
+}
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+
+
+############################ Applying f cmeans to docs
+
+fuzzyDocuments <- fcm(tav, centers = 3, nstart = 10)
 
 #############################
 
