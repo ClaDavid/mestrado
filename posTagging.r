@@ -59,6 +59,10 @@ listaToMatrix <- melt( counts )
 tav <- spread( listaToMatrix, Var1, value, fill = 0 )
 tav$L1 <- NULL
 
+# H = objx$d
+dim(fuzzyFeature$v)
+
+
 
 #############################
 silhoutte_final <- 0
@@ -67,27 +71,22 @@ d = NULL
 start.time <- Sys.time()
 for( i in 2:floor( sqrt( nrow( t(tav) ) ) ) )
 {
-  #fuzzyFeature <- fcm(t(tav), centers = i)  
-  #result.fcm <- ppclust2(fuzzyFeature, "fclust")
-  result.fcm <- FKM(t(tav), k = i)
-  index_silhouette_fuzzy <- XB(result.fcm$Xca, result.fcm$U, result.fcm$H, result.fcm$m)
+  fuzzyFeature <- fcm(t(tav), centers = i, nstart = 10)
+  result.fcm <- ppclust2(fuzzyFeature, "fclust")
+  index_silhouette_fuzzy <- SIL.F(result.fcm$Xca, result.fcm$U)
   #silhoutte_final <- index_silhouette_fuzzy
   if( index_silhouette_fuzzy < 0.4 ) break
-    d = rbind(d, data.frame(i, index_silhouette_fuzzy))
+  d = rbind(d, data.frame(i, index_silhouette_fuzzy))
 
   #if( silhoutte_final < index_silhouette_fuzzy ) silhoutte_final <- index_silhouette_fuzzy 
 }
 end.time <- Sys.time()
 time.taken <- end.time - start.time
 
-write.csv(d, file = "Silhueta_Features_Teste_2.csv", row.names = FALSE)
-plot(d$i, d$index_silhouette_fuzzy, type = "o")
-axis(side=1, at=c(2:(length(d$i) + 1)))
 
-summary(fuzzyFeature)
+############################ Applying f cmeans to docs
 
-
-cat("Fuzzy Silhouette Index: ", silhoutte_final)
+fuzzyDocuments <- fcm(tav, centers = 3, nstart = 10)
 
 #############################
 
