@@ -71,22 +71,43 @@ d = NULL
 start.time <- Sys.time()
 for( i in 2:floor( sqrt( nrow( t(tav) ) ) ) )
 {
+<<<<<<< HEAD
   fuzzyFeature <- fcm(t(tav), centers = i, nstart = 10)
   result.fcm <- ppclust2(fuzzyFeature, "fclust")
   index_silhouette_fuzzy <- SIL.F(result.fcm$Xca, result.fcm$U)
   #silhoutte_final <- index_silhouette_fuzzy
   if( index_silhouette_fuzzy < 0.4 ) break
   d = rbind(d, data.frame(i, index_silhouette_fuzzy))
+=======
+  #fuzzyFeature <- fcm(t(tav), centers = i)  
+  #result.fcm <- ppclust2(fuzzyFeature, "fclust")
+  result.fcm <- FKM(t(tav), k = i)
+  index_silhouette_fuzzy <- XB(result.fcm$Xca, result.fcm$U, result.fcm$H, result.fcm$m)
+  #silhoutte_final <- index_silhouette_fuzzy
+  if( index_silhouette_fuzzy < 0.4 ) break
+    d = rbind(d, data.frame(i, index_silhouette_fuzzy))
+>>>>>>> b145735a5d5a3ecb72c28fee69bd6b8755fbd2b9
 
   #if( silhoutte_final < index_silhouette_fuzzy ) silhoutte_final <- index_silhouette_fuzzy 
 }
 end.time <- Sys.time()
 time.taken <- end.time - start.time
 
+<<<<<<< HEAD
 
 ############################ Applying f cmeans to docs
 
 fuzzyDocuments <- fcm(tav, centers = 3, nstart = 10)
+=======
+write.csv(d, file = "Silhueta_Features_Teste_2.csv", row.names = FALSE)
+plot(d$i, d$index_silhouette_fuzzy, type = "o")
+axis(side=1, at=c(2:(length(d$i) + 1)))
+
+summary(fuzzyFeature)
+
+
+cat("Fuzzy Silhouette Index: ", silhoutte_final)
+>>>>>>> b145735a5d5a3ecb72c28fee69bd6b8755fbd2b9
 
 #############################
 
@@ -249,7 +270,7 @@ eq12 <- function(u, alfa, util, dataset){
 #}
 
 ###no caso, quando for uma matriz no w, 
-#tem que pegar a quantidade de colunas ou linhas (ver se ta transposto ou não)
+#tem que pegar a quantidade de colunas ou linhas (ver se ta transposto ou nÃ£o)
 #colocar o valor de w para todas as distancias
 
 dist.vSimples <- function(x, v, w=rep(1,length(x))){
@@ -344,7 +365,7 @@ runTecAcuracia <- function(w=rep(1,nrow(dataset)), numDicas, alfa, ftotal, datas
 
 
 
-#todos os grupos de atributos começam com peso 1
+#todos os grupos de atributos comeÃ§am com peso 1
 
 #agrupamento de documentos
 fuzzy <- cmeans(tav, 2)
