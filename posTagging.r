@@ -18,7 +18,7 @@ library("stringdist")
 #https://www.sketchengine.eu/modified-penn-treebank-tagset/
 
 posText<- "I gave him my heart, and he took and pinched it to death; and flung it back to me.
-           People feel with their hearts, Ellen, and since he has destroyed mine, I have not power to feel for him."
+People feel with their hearts, Ellen, and since he has destroyed mine, I have not power to feel for him."
 
 tagPOS <-  function(x, ...) 
 {
@@ -42,7 +42,7 @@ tokens <- c()
 
 for( i in 1:length(reuters) )
 {
-    tokens <- rbind( tokens, lapply( lapply( tokensTag[[ i ]]$POStagged, unlist ), paste, collapse = '' ) )
+  tokens <- rbind( tokens, lapply( lapply( tokensTag[[ i ]]$POStagged, unlist ), paste, collapse = '' ) )
 }
 
 tokens <- apply( tokens, 1, as.character )
@@ -71,43 +71,22 @@ d = NULL
 start.time <- Sys.time()
 for( i in 2:floor( sqrt( nrow( t(tav) ) ) ) )
 {
-<<<<<<< HEAD
   fuzzyFeature <- fcm(t(tav), centers = i, nstart = 10)
   result.fcm <- ppclust2(fuzzyFeature, "fclust")
   index_silhouette_fuzzy <- SIL.F(result.fcm$Xca, result.fcm$U)
   #silhoutte_final <- index_silhouette_fuzzy
   if( index_silhouette_fuzzy < 0.4 ) break
   d = rbind(d, data.frame(i, index_silhouette_fuzzy))
-=======
-  #fuzzyFeature <- fcm(t(tav), centers = i)  
-  #result.fcm <- ppclust2(fuzzyFeature, "fclust")
-  result.fcm <- FKM(t(tav), k = i)
-  index_silhouette_fuzzy <- XB(result.fcm$Xca, result.fcm$U, result.fcm$H, result.fcm$m)
-  #silhoutte_final <- index_silhouette_fuzzy
-  if( index_silhouette_fuzzy < 0.4 ) break
-    d = rbind(d, data.frame(i, index_silhouette_fuzzy))
->>>>>>> b145735a5d5a3ecb72c28fee69bd6b8755fbd2b9
-
+  
   #if( silhoutte_final < index_silhouette_fuzzy ) silhoutte_final <- index_silhouette_fuzzy 
 }
 end.time <- Sys.time()
 time.taken <- end.time - start.time
 
-<<<<<<< HEAD
 
 ############################ Applying f cmeans to docs
 
 fuzzyDocuments <- fcm(tav, centers = 3, nstart = 10)
-=======
-write.csv(d, file = "Silhueta_Features_Teste_2.csv", row.names = FALSE)
-plot(d$i, d$index_silhouette_fuzzy, type = "o")
-axis(side=1, at=c(2:(length(d$i) + 1)))
-
-summary(fuzzyFeature)
-
-
-cat("Fuzzy Silhouette Index: ", silhoutte_final)
->>>>>>> b145735a5d5a3ecb72c28fee69bd6b8755fbd2b9
 
 #############################
 
@@ -122,19 +101,19 @@ cat("Fuzzy Silhouette Index: ", silhoutte_final)
 ## Before dist.v
 #distance.centroid <- function( point, centroid ){
 #  distance_centroid = c()
-  
+
 #  for( i in 1:nrow(centroid) )
 #  {
 #    distance_centroid = rbind( distance_centroid, distance_between_two_points( point, centroid[i,] ) )
 #  }
-  
+
 #  return( distance_centroid )
 #}
 
 ## Before dist.xv
 #distance.dataset_to_centroid <- function( dataset, centroid ){
 #  distance_dataset_centroid = c()
-  
+
 #  for( t in 1:nrow(dataset) )
 #  {
 #    distance_dataset_centroid = cbind( distance_dataset_centroid, distance.centroid( dataset[t,], centroid ) )
@@ -152,29 +131,29 @@ cat("Fuzzy Silhouette Index: ", silhoutte_final)
 
 distance_between_two_points <- function( point_1, point_2)
 {
-    return( sqrt( sum( ( point_1 - point_2 )^2 ) ) )
+  return( sqrt( sum( ( point_1 - point_2 )^2 ) ) )
 }
 
 ## Weighted Average Distance
 
 average_distance <- function( point, others_points, weight = rep( 1, number_of_clusters ) )
 {
-    distances <- c()
-    weight <- weight / sum(weight)
-    
-    for( i in 1:nrow( others_points ) )
-    {
-        distances <- distance_between_two_points( point, i )
-    }
-    return( sum(distances * weight) / length(distances) )
+  distances <- c()
+  weight <- weight / sum(weight)
+  
+  for( i in 1:nrow( others_points ) )
+  {
+    distances <- distance_between_two_points( point, i )
+  }
+  return( sum(distances * weight) / length(distances) )
 }
 
 # number_of_clusters = 3
 
 for( cluster_quantity in 2:floor( sqrt( nrow(tav) ) ) )
 {
-    clustering_feature <- cmeans( t(tav), cluster_quantity )
-    
+  clustering_feature <- cmeans( t(tav), cluster_quantity )
+  
 }
 
 
@@ -270,7 +249,7 @@ eq12 <- function(u, alfa, util, dataset){
 #}
 
 ###no caso, quando for uma matriz no w, 
-#tem que pegar a quantidade de colunas ou linhas (ver se ta transposto ou nÃ£o)
+#tem que pegar a quantidade de colunas ou linhas (ver se ta transposto ou não)
 #colocar o valor de w para todas as distancias
 
 dist.vSimples <- function(x, v, w=rep(1,length(x))){
@@ -365,7 +344,7 @@ runTecAcuracia <- function(w=rep(1,nrow(dataset)), numDicas, alfa, ftotal, datas
 
 
 
-#todos os grupos de atributos comeÃ§am com peso 1
+#todos os grupos de atributos começam com peso 1
 
 #agrupamento de documentos
 fuzzy <- cmeans(tav, 2)
