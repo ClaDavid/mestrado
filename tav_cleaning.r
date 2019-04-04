@@ -1,4 +1,3 @@
-library(e1071)
 library(data.table)
 
 
@@ -37,37 +36,8 @@ pos_tagging_col_duplicate <- function(tav_dataframe)
   return(aggr)
 }
 
-tav = pos_tagging_clean(tav)
 tav_clean = pos_tagging_clean(tav)
 tav_clean_part_2 = pos_tagging_col_names(tav_clean)
 tav_final = pos_tagging_col_duplicate(tav_clean_part_2)
 
-#######################
-# clustering features #
-#######################
-
-d = NULL
-start.time <- Sys.time()
-for( i in 2:floor( sqrt( nrow( t(tav) ) ) ) )
-{
-  fuzzyFeature <- cmeans(t(tav), i)
-  result_index_xie_beni <- fclustIndex(fuzzyFeature, t(tav), index = "proportion.exponent")
-  d = rbind(d, data.frame(i, result_index_xie_beni))
-}
-end.time <- Sys.time()
-time.taken <- end.time - start.time
-
-
-
-write.csv(d, file = "Silhueta_Features_Teste_4.csv", row.names = FALSE)
-plot(d$i, d$result_index_xie_beni, type = "o")
-axis(side=1, at=c(2:(length(d$i) + 1)))
-
-# the ideal number of cluster is 5
-
-fuzzyFeature <- cmeans(t(tav), 5)
-
-###################
-# clustering docs #
-###################
-
+write.csv(tav_final, file = "reuters_pos_tag_final.csv", row.names = FALSE, col.names = FALSE)
