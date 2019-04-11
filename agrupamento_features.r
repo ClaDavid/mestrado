@@ -1,5 +1,6 @@
 library(e1071)
 library(data.table)
+library(ppclust)
 
 
 tav <- fread(file = "reuters_pos_tag_final.csv", header = TRUE, check.names = FALSE)
@@ -10,15 +11,30 @@ tav <- fread(file = "reuters_pos_tag_final.csv", header = TRUE, check.names = FA
 
 #####fukuyama.sugeno
 
+start.time <- Sys.time()
 
-for( index in 1:10  )
+
+for( index in 1:5  )
 {
   d = NULL
   
+  
   for( i in 2:floor( sqrt( nrow( t(tav) ) ) ) )
   {
-    fuzzyFeature <- cmeans(t(tav), i)
-    result_index <- fclustIndex(fuzzyFeature, t(tav), index = "fukuyama.sugeno")
+    best_start <- .Machine$integer.max
+    for( index_best_start in 1:10 )
+    {
+      fuzzyFeature <- cmeans(t(tav), i)
+      if( best_start > fuzzyFeature$withinerror )
+      {
+        best_start <- fuzzyFeature$withinerror
+        fuzzyFeatureBest <- fuzzyFeature
+      }
+      
+    }
+    
+    
+    result_index <- fclustIndex(fuzzyFeatureBest, t(tav), index = "fukuyama.sugeno")
     d = rbind(d, data.frame(i, result_index))
   }
   
@@ -28,6 +44,8 @@ for( index in 1:10  )
   dev.off()
 
 }
+end.time <- Sys.time()
+time.taken <- end.time - start.time
 #####xie beni
 for( index in 1:10  )
 {
