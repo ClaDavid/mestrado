@@ -35,6 +35,8 @@ tagPOS <-  function(x, ...)
 data(reuters)
 reuters
 
+reuters = read.table("/home/clarissa/Documentos/mestrado/reuters/reuters.txt", sep = "\t")
+
 tokensTag <- lapply( reuters, tagPOS )
 tokensTag
 

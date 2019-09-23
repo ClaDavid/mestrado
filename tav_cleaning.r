@@ -9,8 +9,8 @@ pos_tagging_clean <- function(tav_dataframe)
   tav_dataframe = tav_dataframe[, -grep("/,$", colnames(tav_dataframe))]
   tav_dataframe = tav_dataframe[, -grep("/.$", colnames(tav_dataframe))]
   # ps as vezes dava 0, talvez seja pq nao acha, tratar isso depois
-  tav_dataframe = tav_dataframe[, -grep("(.*)?>(.*)?/NNP$", colnames(tav_dataframe))]
-  tav_dataframe = tav_dataframe[, -grep("(.*)?<(.*)?/NNP$", colnames(tav_dataframe))]
+  #tav_dataframe = tav_dataframe[, -grep("(.*)?>(.*)?/NNP$", colnames(tav_dataframe))]
+  #tav_dataframe = tav_dataframe[, -grep("(.*)?<(.*)?/NNP$", colnames(tav_dataframe))]
   tav_dataframe = tav_dataframe[, -grep("'/POS$", colnames(tav_dataframe))]
   tav_dataframe = tav_dataframe[, -grep("(.*)?/\'\'", colnames(tav_dataframe))]
   tav_dataframe = tav_dataframe[, -grep("(.*)?/\`\`", colnames(tav_dataframe))]
