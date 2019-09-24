@@ -203,6 +203,7 @@ class FCMMOD:
             if np.any(d2 == 0.0):
                 d2 = SMALL_VALUE
             sum1 += (d1/d2) ** (1.0/(self.m-1))
+            sum1 = sum1[0]
             if np.any(np.isnan(sum1)):
                 self.logger.debug("nan is found in compute_membership_single")
                 self.logger.debug("d1: %s" % str(d1))
@@ -212,7 +213,7 @@ class FCMMOD:
                 self.logger.debug("X[%d] %s" % (datapoint_idx, str(clean_X[datapoint_idx])))
                 self.logger.debug("centers: %s" % str(self.cluster_centers_))
                 raise Exception("nan is found in computer_memberhip_single method in the inner for")
-        sum1 = sum1[0]
+        # sum1 = sum1[0]
         if np.any(sum1 == 0):  # because otherwise it will return inf
             return 1.0 - SMALL_VALUE
         if np.any(np.isnan(sum1 ** -1)):
