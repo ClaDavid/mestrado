@@ -13,9 +13,10 @@ class ClusteringDocs(object):
         self.features_cluster = pd.read_csv("hard_cluster_features.csv")
 
     def runOtimizaPesoAtributo(self, weight=None):
+        print("Starting.......")
         if weight is None:
             weight=np.repeat(1, self.tav.shape[0], axis=0)
-        print(weight)
+        # print(weight)
         silhouette = list()
         #for index in range(1, 10):
         list_features_cluster = list()
@@ -26,7 +27,7 @@ class ClusteringDocs(object):
         #for clusters in range(2, 3):
             weight_array_features = np.empty_like(self.features_cluster[["feature"]])
             for cluster_identification, item in enumerate(list_features_cluster[0]):
-                weight_array_features[cluster_identification] = weight[0][list_features_cluster[0][cluster_identification] - 1]
+                weight_array_features[cluster_identification] = weight[list_features_cluster[0][cluster_identification] - 1]
             #fcm = FCM(n_clusters=clusters)
             #fcm.fit(self.tav)
             fcm_mod = FCMMOD(n_clusters=clusters)
