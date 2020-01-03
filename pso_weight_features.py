@@ -2,6 +2,13 @@ import numpy as np
 import pyswarms as ps
 ######### running
 from clustering_docs import ClusteringDocs
+from fuzzy_clustering_modificado import FCMMOD
+import pandas as pd
+import math
+from sklearn.metrics import silhouette_score
+
+tav = pd.read_csv("reuters_pos_tag_final.csv")
+features_cluster = pd.read_csv("hard_cluster_features.csv")
 
 running_clust = ClusteringDocs()
 options = {'c1': 1.49618, 'c2': 2, 'w':0.9}

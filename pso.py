@@ -278,7 +278,7 @@ if __name__ == '__main__':
     eval_func = running_clust.runOtimizaPesoAtributo
 
     particles, global_solutions, best_evals = run_pso (
-        eval_func, consts, max_iters=50, pop_size=50, particle_size=7
+        eval_func, consts, max_iters=50, pop_size=10, particle_size=7
     )
     np.savetxt("best_evals.csv", best_evals, delimiter=",", fmt=('%s'))
     np.savetxt("best_pos_par.csv", particles, delimiter=",", fmt=('%s'))

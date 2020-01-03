@@ -42,4 +42,20 @@ class ClusteringDocs(object):
             silhouette.append(silhouette_score(self.tav, hard_clustering))
         return(max(silhouette))
 
+    def reconstrucaoIndex(self, membership_matrix, prototype_matrix):
+        list_rows_dataset = [None] * prototype_matrix.shape[1]
+        new_row_new_dataset = list()
+        for index_of_cluster in range(0, membership_matrix.shape[0]):
+            for index_of_prototype in range(0, prototype_matrix.shape[1]):
+                for index_of_member in range(0, membership_matrix.shape[0]):
+                    print(index_of_cluster)
+                    print(index_of_prototype)
+                    list_rows_dataset[index_of_prototype] = ((membership_matrix.iloc[index_of_cluster][index_of_member]*membership_matrix.iloc[index_of_cluster][index_of_member])*prototype_matrix.iloc[index_of_cluster][index_of_prototype])/(membership_matrix.iloc[index_of_cluster][index_of_member]*membership_matrix.iloc[index_of_cluster][index_of_member])
+            new_row_new_dataset = [list_rows_dataset[i] + list_rows_dataset[i] for i in range(len(list_rows_dataset))]
+
+        return(dataset_recreated)
+
+
+## knn ponderado ao inves de agrupamento, acuracia é o fitness, crossvalidation, definir os folds antes para calcular todos os individuos nos mesmos folds
+## trocar silhueta pelo indice do pedricz que se baseia pela matriz de proximidade
 
