@@ -35,14 +35,15 @@ tagPOS <-  function(x, ...)
 data(reuters)
 reuters
 
-reuters = read.table("/home/clarissa/Documentos/mestrado/reuters/reuters.txt", sep = "\t")
+reuters = read.table("/home/clarissa/Documentos/data/reuters_split.csv", header = T, sep = "\t", quote = "")
 
-tokensTag <- lapply( reuters, tagPOS )
+reuters$text = tolower(reuters$text)
+tokensTag <- lapply( reuters$text, tagPOS )
 tokensTag
 
 tokens <- c()
 
-for( i in 1:length(reuters) )
+for( i in 1:length(reuters$text) )
 {
   tokens <- rbind( tokens, lapply( lapply( tokensTag[[ i ]]$POStagged, unlist ), paste, collapse = '' ) )
 }
@@ -57,6 +58,7 @@ words <- lapply( words, unlist )
 counts <- lapply( words, table )
 
 listaToMatrix <- melt( counts )
+write.csv(listaToMatrix, file = "listaToMatrix.csv", row.names = FALSE, col.names = FALSE)
 
 tav <- spread( listaToMatrix, Var1, value, fill = 0 )
 tav$L1 <- NULL
