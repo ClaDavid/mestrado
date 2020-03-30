@@ -1,6 +1,6 @@
 import pandas as pd
-import matplotlib.pyplot as plt
-from kneed import KneeLocator
+# import matplotlib.pyplot as plt
+# from kneed import KneeLocator
 
 
 if __name__ == '__main__':
@@ -10,7 +10,7 @@ if __name__ == '__main__':
     # tav = pd.DataFrame(data=0,index=index_name,columns= column_name)
 
     tav = listaToMatrix.pivot_table(columns='Var1', index='L1', values='value').reset_index()
-    tav = tav.dropna(thresh=2, axis=1)
+    tav = tav.dropna(thresh=0, axis=1)
     
     # list_tav = []
     # documents_common = []
@@ -36,4 +36,4 @@ if __name__ == '__main__':
 
     print(tav)
 
-    tav.to_csv("bbc_tav_partial.csv", index=False)
+    tav.to_csv("bbc_tav_full_final.csv", index=False)
