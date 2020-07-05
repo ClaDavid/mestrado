@@ -12,8 +12,8 @@ import statistics
 class ClassifyingDocs(object):
 
     def __init__(self):
-        self.tav = pd.read_csv("lsvt.csv")
-        self.features_cluster = pd.read_csv("hard_cluster_features_lsvt.csv")
+        self.tav = pd.read_csv("reuters_trans_tav_full_final.csv")
+        self.features_cluster = pd.read_csv("hard_cluster_features_reuters.csv")
 
     def runOtimizaPesoAtributo(self, weight=None):
         print("Starting.......")
@@ -34,7 +34,7 @@ class ClassifyingDocs(object):
             weight_array_features[cluster_identification] = weight[list_features_cluster[0][cluster_identification] - 1]
 
         # wminkowski with p = 2 is the same as euclidian distance
-        knn = KNeighborsClassifier( n_neighbors=1, metric = 'wminkowski', p = 2, metric_params = {'w': np.asarray(weight_array_features)} )
+        knn = KNeighborsClassifier( n_neighbors=3, metric = 'wminkowski', p = 2, metric_params = {'w': np.asarray(weight_array_features)} )
         # knn = KNeighborsClassifier( n_neighbors=3 )
         kFold = StratifiedKFold(n_splits = 10)
         accuracyScore = []
@@ -53,7 +53,7 @@ class ClassifyingDocs(object):
         # print(statistics.mean(accuracyScore))
 
         #save the weights of the feature, will overwrite as only the last one is needed
-        np.savetxt("best_features_weight.csv", np.asarray(weight_array_features), delimiter=",", fmt=('%s'))
+        np.savetxt("best_features_weight_2.csv", np.asarray(weight_array_features), delimiter=",", fmt=('%s'))
 
         ### HAVE TO DEFINE THE ACC
         return(statistics.mean(accuracyScore))

@@ -34,7 +34,7 @@ class ClassifyingDocs(object):
             weight_array_features[cluster_identification] = weight[list_features_cluster[0][cluster_identification] - 1]
 
         # wminkowski with p = 2 is the same as euclidian distance
-        knn = KNeighborsClassifier( n_neighbors=1, metric = 'wminkowski', p = 2, metric_params = {'w': np.asarray(weight_array_features)} )
+        knn = KNeighborsClassifier( n_neighbors=5, metric = 'wminkowski', p = 2, metric_params = {'w': np.asarray(weight_array_features)} )
         # knn = KNeighborsClassifier( n_neighbors=3 )
         kFold = StratifiedKFold(n_splits = 10)
         accuracyScore = []

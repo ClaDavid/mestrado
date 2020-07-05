@@ -1,6 +1,6 @@
 import numpy as np
 # import functions
-from classifying_docs import ClassifyingDocs
+from classifying_docs_2 import ClassifyingDocs
 import datetime
 
 def generate_single_array(n_dimensions, l_bound, u_bound):
@@ -278,9 +278,9 @@ if __name__ == '__main__':
     eval_func = running_clust.runOtimizaPesoAtributo
 
     particles, global_solutions, best_evals = run_pso (
-        eval_func, consts, max_iters=100, pop_size=100, particle_size=5, task='max'
+        eval_func, consts, max_iters=100, pop_size=100, particle_size=12, task='max'
     )
-    np.savetxt("best_evals.csv", best_evals, delimiter=",", fmt=('%s'))
-    np.savetxt("best_global_solutions.csv", global_solutions, delimiter=",", fmt=('%s'))
-    np.savetxt("best_pos_par.csv", particles, delimiter=",", fmt=('%s'))
+    np.savetxt("best_evals_2.csv", best_evals, delimiter=",", fmt=('%s'))
+    np.savetxt("best_global_solutions_2.csv", global_solutions, delimiter=",", fmt=('%s'))
+    np.savetxt("best_pos_par_2.csv", particles, delimiter=",", fmt=('%s'))
     print(datetime.datetime.now())

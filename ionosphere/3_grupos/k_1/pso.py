@@ -266,7 +266,7 @@ def run_pso(eval_func, consts, max_iters=100, pop_size=100, particle_size=10,
         global_solutions.append(global_best)
         global_evals.append(eval_global)
         # print(global_solutions)
-        # print(global_evals)
+        print(global_evals)
     return particles, np.array(global_solutions), global_evals
 
 
@@ -278,7 +278,7 @@ if __name__ == '__main__':
     eval_func = running_clust.runOtimizaPesoAtributo
 
     particles, global_solutions, best_evals = run_pso (
-        eval_func, consts, max_iters=100, pop_size=100, particle_size=5, task='max'
+        eval_func, consts, max_iters=100, pop_size=100, particle_size=3, task='max'
     )
     np.savetxt("best_evals.csv", best_evals, delimiter=",", fmt=('%s'))
     np.savetxt("best_global_solutions.csv", global_solutions, delimiter=",", fmt=('%s'))

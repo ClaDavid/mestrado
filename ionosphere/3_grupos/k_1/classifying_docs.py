@@ -12,8 +12,8 @@ import statistics
 class ClassifyingDocs(object):
 
     def __init__(self):
-        self.tav = pd.read_csv("lsvt.csv")
-        self.features_cluster = pd.read_csv("hard_cluster_features_lsvt.csv")
+        self.tav = pd.read_csv("ionosphere.csv")
+        self.features_cluster = pd.read_csv("hard_cluster_features.csv")
 
     def runOtimizaPesoAtributo(self, weight=None):
         print("Starting.......")

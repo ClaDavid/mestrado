@@ -12,8 +12,8 @@ import statistics
 class ClassifyingDocs(object):
 
     def __init__(self):
-        self.tav = pd.read_csv("lsvt.csv")
-        self.features_cluster = pd.read_csv("hard_cluster_features_lsvt.csv")
+        self.tav = pd.read_csv("ionosphere.csv")
+        self.features_cluster = pd.read_csv("hard_cluster_features.csv")
 
     def runOtimizaPesoAtributo(self, weight=None):
         print("Starting.......")
@@ -34,7 +34,7 @@ class ClassifyingDocs(object):
             weight_array_features[cluster_identification] = weight[list_features_cluster[0][cluster_identification] - 1]
 
         # wminkowski with p = 2 is the same as euclidian distance
-        knn = KNeighborsClassifier( n_neighbors=1, metric = 'wminkowski', p = 2, metric_params = {'w': np.asarray(weight_array_features)} )
+        knn = KNeighborsClassifier( n_neighbors=3, metric = 'wminkowski', p = 2, metric_params = {'w': np.asarray(weight_array_features)} )
         # knn = KNeighborsClassifier( n_neighbors=3 )
         kFold = StratifiedKFold(n_splits = 10)
         accuracyScore = []
