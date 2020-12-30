@@ -38,8 +38,6 @@ def silhouette_method(df):
         print("For number_cluster = {}, silhouette score is {})".format(number_cluster, score))
     # np.savetxt("silhouette_score_reuters_trans.csv", score, delimiter=",", fmt=('%s'))
 
-### gap statistic
-
 
 def kmeans(df, number_cluster):
     clusterer = KMeans(n_clusters=number_cluster).fit(df)
@@ -55,8 +53,5 @@ if __name__ == '__main__':
     
     # elbow_method(tav)
     # silhouette_method(tav)
-    ## BBC Sports = 5 groups of features
-    ## Reuters = 12 groups of features
-    ## LSVT = 5 grupos
     kmeans(tav, 2)
     

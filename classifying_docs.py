@@ -13,7 +13,7 @@ class ClassifyingDocs(object):
 
     def __init__(self):
         self.tav = pd.read_csv("lsvt.csv")
-        self.features_cluster = pd.read_csv("hard_cluster_features_lsvt.csv")
+        self.features_cluster = pd.read_csv("hard_cluster_features_<dataset>.csv")
 
     def runOtimizaPesoAtributo(self, weight=None):
         print("Starting.......")
@@ -60,10 +60,3 @@ class ClassifyingDocs(object):
 
 # running_clust = ClassifyingDocs()
 # running_clust.runOtimizaPesoAtributo()
-
-
-## knn ponderado ao inves de agrupamento, acuracia é o fitness, crossvalidation, definir os folds antes para calcular todos os individuos nos mesmos folds
-
-
-##### HISTOGRAMA COM CORTES
-##### CLASSIFICACAO 66% 33%

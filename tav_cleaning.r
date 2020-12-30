@@ -40,4 +40,4 @@ tav_clean = pos_tagging_clean(tav)
 tav_clean_part_2 = pos_tagging_col_names(tav_clean)
 tav_final = pos_tagging_col_duplicate(tav_clean_part_2)
 
-write.csv(tav_final, file = "reuters_pos_tag_final.csv", row.names = FALSE, col.names = FALSE)
+write.csv(tav_final, file = "<dataset_pos_tag>.csv", row.names = FALSE, col.names = FALSE)

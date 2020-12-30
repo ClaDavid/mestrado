@@ -1,5 +1,5 @@
+## Author: Gustavo Torres Custódio, thank you ma friend!
 import numpy as np
-# import functions
 from classifying_docs import ClassifyingDocs
 import datetime
 
@@ -273,7 +273,6 @@ def run_pso(eval_func, consts, max_iters=100, pop_size=100, particle_size=10,
 if __name__ == '__main__':
     print(datetime.datetime.now())
     consts = [0.7, 1.4, 1.4]
-    # eval_func = functions.rastrigin
     running_clust = ClassifyingDocs()
     eval_func = running_clust.runOtimizaPesoAtributo
 
